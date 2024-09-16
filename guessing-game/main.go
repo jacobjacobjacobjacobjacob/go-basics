@@ -7,7 +7,7 @@ import (
 
 // Generate a random number between 1 and 100
 func getRandomNumber() int {
-	return rand.Intn(101)
+	return rand.Intn(100) + 1
 }
 
 // Take user input and check that the input is valid
@@ -31,6 +31,7 @@ func getUserGuess() int {
 
 // Give hint if the number is too high or too low
 func giveHint(userGuess int, randomNumber int) {
+	// Count the number of guesses
 	if userGuess > randomNumber {
 		fmt.Println("Your guess is too high.")
 	} else {
@@ -43,15 +44,17 @@ func giveHint(userGuess int, randomNumber int) {
 func StartGame() {
 	randomNumber := getRandomNumber()
 	fmt.Println(randomNumber) // DEBUGGING
+	var guesses int
 
 	for {
 		userGuess := getUserGuess()
+		guesses++ // Increment number of guesses
 
 		if userGuess == randomNumber {
 			fmt.Println("Correct, you win!")
+			fmt.Printf("You guessed the number in %d guesses.\n", guesses)
 			break
 		} else {
-			fmt.Println("Wrong number.")
 			giveHint(userGuess, randomNumber)
 		}
 	}
