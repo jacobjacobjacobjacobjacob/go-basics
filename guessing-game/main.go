@@ -1,28 +1,35 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 )
 
+// Struct for difficulty levels
+type DifficultySettings struct {
+	Max     int // Maximum number in the random number raneg
+	Guesses int // Number of guesses allowed
+}
+
 // Generate a random number between 1 and 100
-func getRandomNumber() int {
-	return rand.Intn(100) + 1
+func getRandomNumber(maxNumber int) int {
+	return rand.Intn(maxNumber) + 1
 }
 
 // Take user input and check that the input is valid
-func getUserGuess() int {
+func getUserGuess(maxNumber int) int {
 	var userGuess int
 
 	for {
-		fmt.Println("Input your guess (1-100):")
+		fmt.Printf("Input your guess (1-%d):", maxNumber)
 		fmt.Scanln(&userGuess)
 
 		// Check if the input is within range
-		if userGuess >= 1 && userGuess <= 100 {
+		if userGuess >= 1 && userGuess <= maxNumber {
 			break
 		} else {
-			fmt.Println("Guess is out of range. Please enter a number between 1 and 100.")
+			fmt.Printf("Guess is out of range. Please enter a number between 1 and %d.\n", maxNumber)
 		}
 	}
 
@@ -41,25 +48,32 @@ func giveHint(userGuess int, randomNumber int) {
 }
 
 // Main game function
-func StartGame() {
+func StartGame(difficulty string) {
 	var guesses int
 
-	randomNumber := getRandomNumber()
-	fmt.Println(randomNumber) // DEBUGGING
+	maxNumber, maxGuesses, err := getDifficultySettings(difficulty)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	// Start message
+	fmt.Printf("Guess a number between 1 and %d.\nYou have %d available guesses.\n", maxNumber, maxGuesses)
+
+	randomNumber := getRandomNumber(maxNumber)
 
 	for {
-		userGuess := getUserGuess()
+		userGuess := getUserGuess(maxNumber)
 		guesses++ // Increment number of guesses
 
-		if guesses == 10 {
+		if guesses == maxGuesses {
 			fmt.Println("You lost, no more guesses left.")
 			fmt.Printf("The correct number was %d.\n", randomNumber)
 			break
 		}
 
 		if userGuess == randomNumber {
-			fmt.Println("Correct, you win!")
-			fmt.Printf("You guessed the number in %d guesses.\n", guesses)
+			fmt.Printf("Correct, you win! (%d/%d guesses used).\n", guesses, maxGuesses)
 			break
 		} else {
 			giveHint(userGuess, randomNumber)
@@ -67,7 +81,63 @@ func StartGame() {
 	}
 }
 
+// Check if the chosen difficulty is valid
+func validateDifficulty(inputDifficulty string) (string, error) {
+	switch inputDifficulty {
+	case "1":
+		return "easy", nil
+	case "2":
+		return "medium", nil
+	case "3":
+		return "hard", nil
+	case "4":
+		return "impossible", nil
+	default:
+		return "", errors.New("Invalid difficulty level.")
+	}
+}
+
+// Fetch the parameters for the chosen difficulty settings
+func getDifficultySettings(difficultyLevel string) (maxNumber int, maxGuesses int, err error) {
+
+	// Map for difficulty settings
+	difficulties := map[string]DifficultySettings{
+		"easy":       {50, 10},
+		"medium":     {100, 15},
+		"hard":       {200, 20},
+		"impossible": {300, 10},
+	}
+
+	// Fetch values from the map
+	settings, exists := difficulties[difficultyLevel]
+	if exists {
+		maxNumber = settings.Max
+		maxGuesses = settings.Guesses
+	} else {
+		err = errors.New("Invalid difficulty level.")
+	}
+
+	return
+
+}
+
 func main() {
-	fmt.Println("Welcome to the guessing game!\nThe only objective is to guess a number between 1 and 100...\nYou can only guess 10 times.")
-	StartGame()
+	var inputDifficulty string
+	var chosenDifficulty string
+	var err error
+
+	for {
+		fmt.Println("Welcome to the guessing game!\nThe only objective is to guess the correct number.\nPlease choose a difficulty level:\n1. Easy\n2. Medium\n3. Hard\n4. Impossible")
+		fmt.Scanln(&inputDifficulty)
+
+		chosenDifficulty, err = validateDifficulty(inputDifficulty)
+
+		if err != nil {
+			fmt.Println(err)
+			continue // Keep asking for input until the difficulty level is valid
+		}
+		break
+	}
+
+	StartGame(chosenDifficulty)
 }
