@@ -42,13 +42,20 @@ func giveHint(userGuess int, randomNumber int) {
 
 // Main game function
 func StartGame() {
+	var guesses int
+
 	randomNumber := getRandomNumber()
 	fmt.Println(randomNumber) // DEBUGGING
-	var guesses int
 
 	for {
 		userGuess := getUserGuess()
 		guesses++ // Increment number of guesses
+
+		if guesses == 10 {
+			fmt.Println("You lost, no more guesses left.")
+			fmt.Printf("The correct number was %d.\n", randomNumber)
+			break
+		}
 
 		if userGuess == randomNumber {
 			fmt.Println("Correct, you win!")
@@ -61,6 +68,6 @@ func StartGame() {
 }
 
 func main() {
-	fmt.Println("Welcome to the guessing game!\nThe only objective is to guess a number between 1 and 100...")
+	fmt.Println("Welcome to the guessing game!\nThe only objective is to guess a number between 1 and 100...\nYou can only guess 10 times.")
 	StartGame()
 }
