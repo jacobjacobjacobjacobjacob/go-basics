@@ -1,3 +1,5 @@
+// Simple game for guessing the correct number.
+
 package main
 
 import (
