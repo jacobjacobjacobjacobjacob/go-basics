@@ -57,25 +57,37 @@ func readCsv(csvFilePath string) []Record {
 
 }
 
-// Check if the answer is correct
-
 // Main game loop
 func StartGame() {
 	questionData := readCsv("data/problems.csv")
 	fmt.Println(questionData)
 	fmt.Println(questionData[0].Question)
 
-	// Variable to keep count of the number of questions asked
-	var questionCount int
-	questionCount = 1
+	// Variable to keep count of the number of questions/answers asked
+	questionCount := 1
+	correctAnswerCount := 0
+	wrongAnswerCount := 0
 
 	// Iterate over the slice and print the questions
 	for _, question := range questionData {
-		fmt.Printf("Q%d: %s = \n", questionCount, question.Question)
+		fmt.Printf("Question %d:\n%s=", questionCount, question.Question)
 		questionCount++ // Increment count
 
-	}
+		// Ask for user input
+		var userAnswer string
+		fmt.Scanln(&userAnswer)
 
+		// Validate user input against to check if the answer is correct
+		if userAnswer == question.Answer {
+			correctAnswerCount++
+			continue
+		} else {
+			wrongAnswerCount++
+			continue
+		}
+
+	}
+	fmt.Printf("You scored %d out of %d.\n", correctAnswerCount, wrongAnswerCount)
 }
 
 func main() {
