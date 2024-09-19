@@ -63,10 +63,9 @@ func StartGame() {
 	fmt.Println(questionData)
 	fmt.Println(questionData[0].Question)
 
-	// Variable to keep count of the number of questions/answers asked
+	// Variable to keep count of the number of questions and score.
 	questionCount := 1
-	correctAnswerCount := 0
-	wrongAnswerCount := 0
+	scoreCount := 0
 
 	// Iterate over the slice and print the questions
 	for _, question := range questionData {
@@ -79,15 +78,15 @@ func StartGame() {
 
 		// Validate user input against to check if the answer is correct
 		if userAnswer == question.Answer {
-			correctAnswerCount++
-			continue
-		} else {
-			wrongAnswerCount++
+			scoreCount++
 			continue
 		}
 
 	}
-	fmt.Printf("You scored %d out of %d.\n", correctAnswerCount, wrongAnswerCount)
+
+	fmt.Printf("You scored %d out of %d.\n", scoreCount, len(questionData))
+
+	//fmt.Printf("You scored %d out of %d.\n", correctAnswerCount, wrongAnswerCount)
 }
 
 func main() {
