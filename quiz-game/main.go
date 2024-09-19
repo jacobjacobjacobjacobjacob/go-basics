@@ -60,8 +60,6 @@ func readCsv(csvFilePath string) []Record {
 // Main game loop
 func StartGame() {
 	questionData := readCsv("data/problems.csv")
-	fmt.Println(questionData)
-	fmt.Println(questionData[0].Question)
 
 	// Variable to keep count of the number of questions and score.
 	questionCount := 1
@@ -85,8 +83,6 @@ func StartGame() {
 	}
 
 	fmt.Printf("You scored %d out of %d.\n", scoreCount, len(questionData))
-
-	//fmt.Printf("You scored %d out of %d.\n", correctAnswerCount, wrongAnswerCount)
 }
 
 func main() {
