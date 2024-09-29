@@ -1,3 +1,5 @@
 .env
 .vscode
 basics.go
+
+./weather-app
