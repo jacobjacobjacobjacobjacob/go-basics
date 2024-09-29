@@ -1,13 +1,3 @@
-// Go Course by Jon Calhoun
-// Exercise #1: Quiz Game
-
-/*
-Create a program that will read in a quiz provided via a CSV file.
-Quiz the user and keep track of how many questions they get correct and incorrect.
-Regardless of whether the answer is correct or wrong, immediately move on to the next question.
-At the end of the quiz, output total number of correct questions and how many questions there were in total.
-*/
-
 package main
 
 import (
