@@ -11,9 +11,11 @@ At the end of the quiz, output total number of correct questions and how many qu
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"os"
+	"time"
 )
 
 // Struct to store the CSV data
@@ -65,27 +67,47 @@ func StartGame() {
 	questionCount := 1
 	scoreCount := 0
 
+	// Set the timer duration (e.g., 30 seconds)
+	timerDuration := 30 * time.Second
+	done := make(chan bool)
+
+	// Start the timer in a goroutine
+	go func() {
+		time.Sleep(timerDuration)
+		done <- true // Signal that the time is up
+	}()
+
 	// Iterate over the slice and print the questions
 	for _, question := range questionData {
-		fmt.Printf("Question %d:\n%s=", questionCount, question.Question)
-		questionCount++ // Increment count
+		select {
+		case <-done:
+			fmt.Println("\nTime's up! The quiz has ended.")
+			fmt.Printf("You scored %d out of %d.\n", scoreCount, len(questionData))
+			return
+		default:
+			fmt.Printf("Question %d:\n%s=", questionCount, question.Question)
+			questionCount++ // Increment count
 
-		// Ask for user input
-		var userAnswer string
-		fmt.Scanln(&userAnswer)
+			// Ask for user input
+			var userAnswer string
+			fmt.Scanln(&userAnswer)
 
-		// Validate user input against to check if the answer is correct
-		if userAnswer == question.Answer {
-			scoreCount++
-			continue
+			// Validate user input against the correct answer
+			if userAnswer == question.Answer {
+				scoreCount++
+			}
 		}
-
 	}
 
 	fmt.Printf("You scored %d out of %d.\n", scoreCount, len(questionData))
 }
 
 func main() {
+	fmt.Println("Welcome to the quiz game.\nPress Enter to start...")
+
+	// Wait for user to press Enter
+	reader := bufio.NewReader(os.Stdin)
+	_, _ = reader.ReadString('\n')
 	StartGame()
 
 }
